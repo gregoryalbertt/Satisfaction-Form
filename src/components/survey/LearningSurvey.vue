@@ -13,22 +13,14 @@
           <label for="rating-poor">Poor</label>
         </div>
         <div class="form-control">
-          <input
-            type="radio"
-            id="rating-average"
-            value="average"
-            name="rating"
-            v-model="chosenRating"
-          />
+          <input type="radio" id="rating-average" value="average" name="rating" v-model="chosenRating" />
           <label for="rating-average">Average</label>
         </div>
         <div class="form-control">
           <input type="radio" id="rating-great" value="great" name="rating" v-model="chosenRating" />
           <label for="rating-great">Great</label>
         </div>
-        <p
-          v-if="invalidInput"
-        >One or more input fields are invalid. Please check your provided data.</p>
+        <p v-if="invalidInput">One or more input fields are invalid. Please check your provided data.</p>
         <div>
           <base-button>Submit</base-button>
         </div>
@@ -38,6 +30,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -46,7 +40,6 @@ export default {
       invalidInput: false,
     };
   },
-  emits: ['survey-submit'],
   methods: {
     submitSurvey() {
       if (this.enteredName === '' || !this.chosenRating) {
@@ -55,10 +48,10 @@ export default {
       }
       this.invalidInput = false;
 
-      this.$emit('survey-submit', {
-        userName: this.enteredName,
+      axios.post('https://satisfaction-form-258b6-default-rtdb.firebaseio.com/surveys.json', {
+        name: this.enteredName,
         rating: this.chosenRating,
-      });
+      })
 
       this.enteredName = '';
       this.chosenRating = null;
