@@ -31,6 +31,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -52,9 +53,27 @@ export default {
         name: this.enteredName,
         rating: this.chosenRating,
       })
-
-      this.enteredName = '';
-      this.chosenRating = null;
+        .then(response => {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your survey has been sent",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          this.enteredName = '';
+          this.chosenRating = null;
+        })
+        .catch(error => {
+          console.log('An error occurred while sending POST request: ' + error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            showConfirmButton: false,
+            timer: 1500
+          });
+        })
     },
   },
 };

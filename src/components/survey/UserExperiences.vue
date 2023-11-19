@@ -5,10 +5,12 @@
       <div>
         <base-button @click="loadExperiences">Load Submitted Experiences</base-button>
       </div>
-      <ul v-if="!isLoading">
+      <ul v-if="!isLoading && results.length > 0">
         <survey-result v-for="result in results" :key="result.id" :name="result.name"
           :rating="result.rating"></survey-result>
       </ul>
+      <p v-else-if="!isLoading && results.length === 0">No stored experiences found. Start adding surveys results in the
+        form above.</p>
     </base-card>
   </section>
 </template>
@@ -16,7 +18,7 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2'
-import SurveyResult from './SurveyResult.vue';
+import SurveyResult from '@/components/survey/SurveyResult.vue';
 
 export default {
   data() {
@@ -36,6 +38,16 @@ export default {
             results.push({ id: id, name: response.data[id].name, rating: response.data[id].rating });
           }
           this.results = results;
+        })
+        .catch(error => {
+          console.log('An error occurred while sending GET request: ' + error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            showConfirmButton: false,
+            timer: 1500
+          });
         })
     }
 
